@@ -1,5 +1,5 @@
-##Vimond case
-#What you have to do to get the code running:
+# Vimond case
+## What you have to do to get the code running:
 1. Install npm
 2. Navigate to directory
 3. npm install
