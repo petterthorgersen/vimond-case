@@ -1,0 +1,197 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  margin: 10px;
+  font-size: large;
+}
+
+
+.image-crop {
+    object-fit: cover;
+    object-position: 0 0;
+    background-color: black;
+    color: white;
+}
+
+.paragraph {
+    height: 50px;
+    text-align: left;
+    font-size: 14px;
+    overflow: hidden;
+    padding: 4px;
+    margin: 0;
+}
+
+.form {
+    width: 95%;
+    height: 150px;
+    padding: 4px;
+    margin: 0;
+}
+
+input {
+    float: right;
+}
+
+.tdName {
+    text-align: left;
+    font-size: 16px;
+}
+
+.container {
+    margin: 10px;
+    display: inline-block;
+    width: 90%;
+    background-color: rgba(0,0,0,0.1);
+}
+
+.imageArea {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    float: right;
+}
+
+.textArea {
+    color: black;
+    width: 100%;
+    height: 100%;
+    float: left;
+}
+
+.buttonArea {
+    display: inline-block;
+    height: 30px;
+    width: 100%;
+}
+
+
+.button {
+    background-color: #ff840c;
+    color: white;
+    font-weight: 900;
+    border: none;
+    border-radius: 5px;
+    margin: 10px 0px 10px 0px;
+}
+
+.button:hover {
+    background-color: #ff9933;
+}
+
+.button:active {
+    background-color: #b35900;
+}
+
+.buttonSmall {
+    margin: 5px;
+    width: 40%;
+}
+img {
+    width: 100%;
+    height: 200px;
+}
+
+h3 {
+    margin: 4px 0 0 4px;
+    text-align: left;
+    font-size: 18px;
+    hyphens: auto;
+    height: 50px;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.overlay:hover {
+    background-color: transparent;
+    cursor: pointer;
+}
+
+figure {
+    height: 100%;
+    display: flex;
+    display: -ms-flex;
+    display: -webkit-flex;
+    margin: 0 auto;
+}
+
+figure button[name="play"] {
+    width: 80px;
+    height: 80px;
+    background: #ff840c;
+    border: none;
+    border-radius: 100%;
+    margin: auto;
+    cursor: pointer;
+}
+
+figure button[name="play"]::after {
+    content: '';
+    display: inline-block;
+    position: relative;
+    top: 1px;
+    left: 3px;
+    border-style: solid;
+    border-width: 10px 0 10px 20px;
+    border-color: transparent transparent transparent white;
+}
+
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media screen and (min-width: 700px) {
+    .textArea {
+        width: 50%;
+    }
+    .imageArea {
+        width: 50%;
+    }
+    .buttonArea {
+        width: 95%;
+    }
+    .buttonSmall {
+        width: 40%;
+    }
+    .container {
+        width: 500px;
+        height: 200px;
+    }
+    .App-intro {
+        margin: 50px;
+    }
+    figure button[name="play"] {
+        width: 60px;
+        height: 60px;
+    }
+    .paragraph {
+        height: 90px;
+    }
+    .tdName {
+        font-size: 12px;
+    }
+}
