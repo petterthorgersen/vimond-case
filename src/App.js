@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import dashjs from "dashjs";
 import './App.css';
 
 function ShowMetadata(props) {
@@ -11,7 +12,47 @@ function ShowMetadata(props) {
     );
 }
 
-function PlaVideo(props) {
+function ShowImageAndPlayButton(props) {
+    return (
+        <div className="imageArea" >
+          <img className="image-crop" src={props.video} alt="Nothing here."/>
+          <div className="overlay">
+            <figure>
+              <button name="play" onClick={props.onPlay} ></button>
+            </figure>
+          </div>
+        </div>
+    );
+}
+
+class PlayVideo extends Component {
+    render() {
+        return (
+            <div className="imageArea" >
+              <video id={"video" + this.props.idKey} controls autoPlay/>
+            </div>
+        );
+    }
+    componentDidMount () {
+        var url = this.props.videoLink;
+        var player = dashjs.MediaPlayer().create();
+        player.initialize(document.querySelector("#video" + this.props.idKey ), url, true);
+    }
+}
+
+//returns null if the metadata isn't present
+function MetadataInput(props) {
+    if (props.value !== undefined) {
+    return (
+        <tr>
+          <td className="tdName" >{props.label}:</td>
+          <td>
+            <input type="text" name={props.label} className="input" value={ props.value } onChange={ props.onChange }/><br/>
+          </td>
+        </tr>
+    );
+    }
+    else return (null);
 }
 
 class UpdateMetadata extends Component {
@@ -24,46 +65,18 @@ class UpdateMetadata extends Component {
             <div className="textArea" >
               <div className="form">
                 <table>
-                  <tr>
-                    <td className="tdName" >Title:</td>
-                    <td>
-                      <input type="text" name="title" className="input" value={ this.state.metadata.title } onChange={ this.titleChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="tdName">Description:</td>
-                    <td>
-                      <input type="text" name="descr" className="input" value={ this.state.metadata.description } onChange={ this.desChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="tdName">Genre:</td>
-                    <td>
-                      <input type="text" name="descr" className="input" value={ this.state.metadata.genre } onChange={ this.genreChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="tdName">Tags:</td>
-                    <td>
-                      <input type="text" name="descr" className="input" value={ this.state.metadata.tags } onChange={ this.tagsChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="tdName">Prod. Country:</td>
-                    <td>
-                      <input type="text" name="descr" className="input" value={ this.state.metadata.prodCountry } onChange={ this.prodChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="tdName">Keywords:</td>
-                    <td>
-                      <input type="text" name="descr" className="input" value={ this.state.metadata.keywords } onChange={ this.keywordsChange.bind(this) }/><br/>
-                    </td>
-                  </tr>
+                  <tbody>
+                    <MetadataInput value={ this.state.metadata.title } label="title" onChange={ this.titleChange.bind(this) } />
+                    <MetadataInput value={ this.state.metadata.description } label="description" onChange={ this.desChange.bind(this) } />
+                    <MetadataInput value={ this.state.metadata.genre } label="genre" onChange={ this.genreChange.bind(this) } />
+                    <MetadataInput value={ this.state.metadata.tags } label="tags" onChange={ this.tagsChange.bind(this) } />
+                    <MetadataInput value={ this.state.metadata.prodCountry } label="prodCountry" onChange={ this.prodChange.bind(this) } />
+                    <MetadataInput value={ this.state.metadata.keywords } label="keywords" onChange={ this.keywordsChange.bind(this) } />
+                  </tbody>
                 </table>
               </div>
               <button className="buttonArea button buttonSmall" onClick={() => this.props.onSave(this.state.metadata)} >Save</button>
-              <button className="buttonArea button buttonSmall" onClick={this.props.onCancel} >Cancel</button>
+              <button className="buttonArea button buttonSmall" onClick={ this.props.onCancel } >Cancel</button>
             </div>
         )
         ;}
@@ -126,23 +139,17 @@ class Asset extends Component {
         fetch(videoLink)
             .then(response => response.json())
             .then(json => {
-                this.video = json;
-                this.forceUpdate();
+                this.setState({videoLink: json.playback.items.item.url});
+                console.log(json.playback.items.item.url);
             });
-        this.state = { metadata: metadata, widget: <ShowMetadata metadata={ metadata } onEdit={this.onEdit.bind(this)}/>};
+        this.state = { metadata: metadata, widget: <ShowMetadata metadata={ metadata } onEdit={ this.onEdit.bind(this) }/>,
+                       video: <ShowImageAndPlayButton video={ props.asset.imageUrl } onPlay={ this.onPlay.bind(this) }/> };
     }
     render() {
         return (
             <div className="container" >
               {this.state.widget}
-              <div className="imageArea" >
-                <img className="image-crop" src={this.props.asset.imageUrl} alt="Nothing here."/>
-                <div className="overlay">
-                  <figure>
-                    <button name="play" onClick={this.onPlay} ></button>
-                  </figure>
-                </div>
-              </div>
+              {this.state.video}
             </div>
         );
     }
@@ -159,10 +166,10 @@ class Asset extends Component {
     onCancel() {
         this.setState({widget: <ShowMetadata metadata={this.state.metadata} onEdit={this.onEdit.bind(this)}/>});
     }
-    onPlay(){
-        alert("This is where the fun ends.");
-    }
 
+    onPlay(){
+        this.setState({video: <PlayVideo idKey={this.props.idKey} videoLink={this.state.videoLink} />});
+    }
 }
 
 class App extends Component {
@@ -171,7 +178,7 @@ class App extends Component {
         fetch("https://vimond-rest-api.ha.expo-first.vimondtv.com/api/web/search/categories/root/assets.json")
             .then(response => response.json())
             .then(json => {
-                json.assets.asset.forEach((asset,index) => this.state.assets.push(<Asset asset={asset} key={index}/>));
+                json.assets.asset.forEach((asset,index) => this.state.assets.push(<Asset asset={asset} key={index} idKey={index}/>));
                 this.forceUpdate();
             });
         this.state = { assets: [] };
@@ -185,6 +192,7 @@ class App extends Component {
                 {this.state.assets}
               </div>
             </div>
+
         );
     }
 }

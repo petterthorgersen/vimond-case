@@ -19,7 +19,6 @@
   font-size: large;
 }
 
-
 .image-crop {
     object-fit: cover;
     object-position: 0 0;
@@ -34,6 +33,12 @@
     overflow: hidden;
     padding: 4px;
     margin: 0;
+}
+
+video {
+    object-fit: fill;
+    height: 100%;
+    width: 100%;
 }
 
 .form {
